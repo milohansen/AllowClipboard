@@ -8,7 +8,14 @@
         "persistent": false,
         "scripts": [ "background.js", "common.js" ]
     },
-    "permissions": [ "http://*/*", "https://*/*", "clipboardRead", "clipboardWrite" ],
+    "permissions": [
+        "http://*/*",
+        "https://*/*",
+        "clipboardRead",
+        "clipboardWrite",
+        "storage",
+        "tabs"
+    ],
     "content_scripts": [
         {
             "matches": [ "http://*/*", "https://*/*" ],

@@ -23,6 +23,30 @@ module AllowClipboard.ContentScript {
         if (message.type != "AllowClipboard") {
             return;
         }
+        
+        let userAllowedClipboard: boolean,
+            currentHostname: string;
+            
+        chrome.tabs.getCurrent((tab: chrome.tabs.Tab) => {
+            let url = new URL(tab.url);
+            currentHostname = url.hostname;
+        });
+        
+        chrome.storage.sync.get(["allowedSites"], (items: Object) => {
+            userAllowedClipboard = !!items[currentHostname];
+        });
+        
+        
+        if (!userAllowedClipboard && confirm('Allow this webpage to access your Clipboard?')) {		
+            chrome.storage.sync.set(["allowedSites"], (items: Object) => {
+                userAllowedClipboard = items[currentHostname] = true;
+            });
+        }		
+		
+        if (!userAllowedClipboard) {		
+            window.postMessage(new AllowClipboard.Common.AllowClipboardResponseMessage(message.operation, message.clientId, message.operationId, false), "*");		
+            return;		
+        }
 
         switch (message.operation) {
             case "Read":
