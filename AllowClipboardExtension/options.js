@@ -23,5 +23,11 @@ function restore_options() {
         document.getElementById('prompt').checked = items.disablePrompt;
     });
 }
+
+function clearHostnames() {
+    chrome.storage.sync.remove("allowedSites", function () { });
+}
+
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('save').addEventListener('click', save_options);
+document.getElementById('clearAllowedSites').addEventListener('click', clearHostnames);

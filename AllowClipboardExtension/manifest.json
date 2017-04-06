@@ -18,8 +18,7 @@
         "https://*/*",
         "clipboardRead",
         "clipboardWrite",
-        "storage",
-        "tabs"
+        "storage"
     ],
     "content_scripts": [
         {

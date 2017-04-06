@@ -6,6 +6,7 @@
         "sourceMap": false,
         "moduleResolution": "node",
         "outDir": "AllowClipboardExtension",
+        "removeComments": true,
         "lib": ["es2015", "dom"]
     },
     "files": [
