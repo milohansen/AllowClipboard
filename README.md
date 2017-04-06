@@ -12,9 +12,10 @@ This project is written primarily in TypeScript using Visual Studio 2013. TypeSc
 
 # Debugging
 <ol>
-<li>If first run, build project so that JavaScript files are generated to AllowClipboardExtension.
+<li>Run `npm install`</li>
+<li>If first run, build project so that JavaScript files are generated to AllowClipboardExtension by executing tsc in the project directory.
   <ul>
-    <li>Note: TypeScript files are automatically compiled to JavaScript on Save.</li>
+    <li>Note: To watch and auto generate JS files on save execute `tsc -w`</li>
   </ul>
 </li>
 <li>Download <a href="https://chrome.google.com/webstore/detail/chrome-apps-extensions-de/ohmmkhmmmpcnpikjeljgnaoabkaalbgc?hl=en">Chrome Apps & Extensions Developer Tool</a>.</li>
