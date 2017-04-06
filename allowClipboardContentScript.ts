@@ -1,4 +1,4 @@
-﻿///<reference path="references.ts" />
+﻿///<reference path="common.ts" />
 
 //Runs in the context of the webpage but isolated.
 module AllowClipboard.ContentScript {
