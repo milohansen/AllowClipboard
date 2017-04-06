@@ -2,41 +2,44 @@
 
 //Runs in the context of the webpage but isolated.
 module AllowClipboard.ContentScript {
-    var userAllowedClipboard: boolean;
+    interface IStoredSettings {
+        allowedSites: { [hostName: string]: boolean };
+        disablePrompt: boolean;
+    }
 
-    chrome.storage.sync.get({
-        disablePrompt: false,
-    }, function (items) {
-        console.log("Extension retrieved options.")
-        console.log(`DisablePrompt ${items.disablePrompt}`);
-        if (items.disablePrompt) {
-            userAllowedClipboard = true;
+    /* Add the client API to the web page */
+    var clientScript = document.createElement('script');
+    clientScript.src = chrome.extension.getURL('allowClipboardClient.js');
+    document.head.appendChild(clientScript);
+
+    var commonScript = document.createElement('script');
+    commonScript.src = chrome.extension.getURL('common.js');
+    document.head.appendChild(commonScript);
+
+    /* Add event listener for AllowClipboard messages */
+    window.addEventListener("message", event => {
+        // We only accept messages from ourselves
+        if (event.source != window) {
+            return;
         }
 
-        /* Add the client API to the web page */
-        var clientScript = document.createElement('script');
-        clientScript.src = chrome.extension.getURL('allowClipboardClient.js');
-        document.head.appendChild(clientScript);
+        var message = <AllowClipboard.Common.IAllowClipboardMessage>event.data;
 
-        var commonScript = document.createElement('script');
-        commonScript.src = chrome.extension.getURL('common.js');
-        document.head.appendChild(commonScript);
+        if (message.type != "AllowClipboard") {
+            return;
+        }
 
-        /* Add event listener for AllowClipboard messages */
-        window.addEventListener("message", event => {
-            // We only accept messages from ourselves
-            if (event.source != window) {
-                return;
-            }
+        let userAllowedClipboard: boolean;
+        let currentHostname: string = window.location.hostname;
+        let allowedSites: { [hostname: string]: boolean };
 
-            var message = <AllowClipboard.Common.IAllowClipboardMessage>event.data;
+        chrome.storage.sync.get({ "allowedSites": {}, disablePrompt: false }, (items: IStoredSettings) => {
+            userAllowedClipboard = items.allowedSites[currentHostname] || items.disablePrompt;
+            allowedSites = items.allowedSites || {};
 
-            if (message.type != "AllowClipboard") {
-                return;
-            }
-
-            if (typeof userAllowedClipboard === 'undefined') {
-                userAllowedClipboard = confirm('Allow this webpage to access your Clipboard?');
+            if (!userAllowedClipboard && confirm('Allow this webpage to access your Clipboard?')) {
+                allowedSites[currentHostname] = true;
+                chrome.storage.sync.set({ "allowedSites": allowedSites }, () => { });
             }
 
             if (!userAllowedClipboard) {
@@ -60,7 +63,9 @@ module AllowClipboard.ContentScript {
                 default:
                     console.log("Unknown AllowClipboard operation: " + message.operation);
             }
-        }, false);
-    });
-}
+        });
 
+
+    }, false);
+
+}
