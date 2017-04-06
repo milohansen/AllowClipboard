@@ -8,7 +8,7 @@
         "persistent": false,
         "scripts": [ "background.js", "common.js" ]
     },
-    "permissions": [ "http://*/*", "https://*/*", "clipboardRead", "clipboardWrite" ],
+    "permissions": [ "http://*/*", "https://*/*", "clipboardRead", "clipboardWrite", "storage" ],
     "content_scripts": [
         {
             "matches": [ "http://*/*", "https://*/*" ],
@@ -18,5 +18,6 @@
     "web_accessible_resources": [
         "allowClipboardClient.js",
         "common.js"
-    ]
+    ],
+    "options_page": "options.html" 
 }
